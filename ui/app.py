@@ -2,6 +2,7 @@
 from flask import Flask, render_template, request
 # from vdo import summarization
 import subprocess
+import os
 import csv
 import moviepy.editor as mp
 import nltk
@@ -10,8 +11,10 @@ from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer
 import xlrd
+import time
 import codecs
-nltk.download('punkt')
+
+# nltk.download('punkt')
 app = Flask(__name__)
 
 
@@ -74,8 +77,13 @@ def summarization():
     # csv input
     # fsv = "meetingAttendanceList.csv"
     attendee_value = attendee(fsv)
+    
+    file_paths = ["static\\videos\\" +video.filename,"audio1_file.mp3" , fsv ,"transcript.txt"]
 
-    return render_template('preview.html', result21=summary, h=hours, m=mins, ss=secs, c=attendee_value)
+    clip.close()
+
+    return render_template('preview.html', result21=summary, h=hours, m=mins, ss=secs, c=attendee_value) , delete_files(file_paths)
+
 
 
 def summarize(text, ratio=0.2):
@@ -151,9 +159,29 @@ def attendee(fsv):
 
     else:
         raise ValueError("Unsupported file format")
+    
+
+
     return count
+    
+    
 
 # Contains the duration of the video in terms of seconds
+
+
+def delete_files(file_paths):
+    time.sleep(120)
+    for file_path in file_paths:
+        try:
+            # delete the file
+            os.remove(file_path)
+            print(f"{file_path} has been deleted")
+        except OSError as error:
+            print(error)
+
+
+
+
 
 
 if __name__ == '__main__':
