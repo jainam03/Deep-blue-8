@@ -15,6 +15,7 @@ nltk.download('punkt')
 app = Flask(__name__)
 
 
+
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -124,12 +125,29 @@ def attendee(fsv):
     
     elif fsv.endswith('.csv'):
         # Read the CSV file using the csv module
-        with open(fsv, "r") as file:
-            csvReader = csv.reader(codecs.open(fsv, 'rU', 'utf-16'))
-        count = -1
-        for row in csvReader:
-            if row[attendee_column]:
-                count += 1
+        # with open(fsv, "r") as file:
+        #     csvReader = csv.reader(codecs.open(fsv, 'rU',))
+        # count = -1
+        # for row in csvReader:
+        #     if row[attendee_column]:
+        #         count += 1
+        
+
+        unique_attendees = set()  # a set to store unique attendees
+
+        with open(fsv , 'r') as file:
+            reader = csv.reader(file)
+            for row in reader:
+        # assuming the attendee name is in the first column of the CSV file
+                attendee = row[0].strip()  # remove leading/trailing whitespaces
+                if attendee:  # check if the attendee name is not an empty string
+                    unique_attendees.add(attendee)  # add the attendee name to the set of unique attendees
+
+        count = len(unique_attendees)
+
+# print(f'Number of unique attendees: {num_unique_attendees}')
+# for name in unique_attendees:
+#     print(name)
 
     else:
         raise ValueError("Unsupported file format")
