@@ -107,7 +107,7 @@ def attendee(fsv):
     elif fsv.endswith('.csv'):
         # Read the CSV file using the csv module
         with open(fsv, "r") as file:
-            csvReader = csv.reader(codecs.open(fsv, 'rU', 'utf-16'))
+            csvReader = csv.reader(codecs.open(fsv, 'rU'))
         count = -1
         for row in csvReader:
             if row[attendee_column]:
