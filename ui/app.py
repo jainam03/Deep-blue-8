@@ -98,16 +98,34 @@ def attendee(fsv):
 
     if fsv.endswith('.xls'):
         # Load the Excel file using xlrd
-        wb = xlrd.open_workbook(fsv)
-        sheet = wb.sheet_by_index(0)
+        # wb = xlrd.open_workbook(fsv)
+        # sheet = wb.sheet_by_index(0)
 
-        # Count the number of non-empty cells in the specified column
-        count = sum([1 for cell in sheet.col(attendee_column) if cell.value])-1
+        # # Count the number of non-empty cells in the specified column
+        # count = sum([1 for cell in sheet.col(attendee_column) if cell.value])-1
 
+    
+        unique_attendees = set()  # a set to store unique attendees
+
+        workbook = xlrd.open_workbook(fsv)  # open the XLS file
+        worksheet = workbook.sheet_by_index(0)  # select the first worksheet
+
+        for row_idx in range(1, worksheet.nrows):
+    # assuming the attendee name is in the first column of the XLS file
+            attendee = worksheet.cell_value(row_idx, 0).strip()  # remove leading/trailing whitespaces
+            if attendee:  # check if the attendee name is not an empty string
+                unique_attendees.add(attendee)  # add the attendee name to the set of unique attendees
+
+        count = len(unique_attendees)
+
+    
+    
+    
+    
     elif fsv.endswith('.csv'):
         # Read the CSV file using the csv module
         with open(fsv, "r") as file:
-            csvReader = csv.reader(codecs.open(fsv, 'rU'))
+            csvReader = csv.reader(codecs.open(fsv, 'rU', 'utf-16'))
         count = -1
         for row in csvReader:
             if row[attendee_column]:
