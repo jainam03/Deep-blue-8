@@ -89,13 +89,13 @@
         input[type="file"]::file-selector-button:hover,
         input[type="file"]::file-selector-button:focus {
 
-            transform: scale(0.95);
+            transform: scale(0.965);
 
-            transition: 0.3s;
+            outline: none;
         }
         input[type="file"]::file-selector-button:active {
 
-            transform: scale(0.9);
+            transform: scale(0.95);
 
             transition: 0.3s;
         }
@@ -118,15 +118,17 @@
             padding: 10px;
 
             border: none;
+            outline: none;
             border-radius: 10px;
 
             transition: 0.2s;
         }
         input[type="submit"]:hover,
         input[type="submit"]:focus {
+            outline: none;
             background-color: #3a54bb;
 
-            transform: scale(0.95);
+            transform: scale(0.965);
 
             transition: 0.3s;
         }
