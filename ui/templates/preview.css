@@ -20,11 +20,7 @@
             letter-spacing: 2px ;
             margin: 10px 0 15px 0;
             
-            background-color: #62b0f0;
-
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #3a54bb;
         }
 
         .container1 {

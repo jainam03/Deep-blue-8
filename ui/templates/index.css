@@ -21,10 +21,9 @@
 
         h1 {
             letter-spacing: 2px;
-            background-color: #62b0f0;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #3a54bb;
+
+            font-size: xxx-large;
         }
 
         form {
@@ -69,7 +68,8 @@
         }
 
         input[type="file"]::file-selector-button {
-            background-color: #62b0f0;
+            background-color: #3a54bb;
+            color: #fff;
             
             font-size: 15px;
             font-weight: 600;
@@ -107,7 +107,8 @@
         }
 
         input[type="submit"] {
-            background-color: #62b0f0;
+            background-color: #3a54bb;
+            color: #fff;
 
             cursor: pointer;
 
@@ -123,14 +124,14 @@
         }
         input[type="submit"]:hover,
         input[type="submit"]:focus {
-            background-color: #62b0f0;
+            background-color: #3a54bb;
 
             transform: scale(0.95);
 
             transition: 0.3s;
         }
         input[type="submit"]:active {
-            background-color: #62b0f0;
+            background-color: #3a54bb;
             
             transform: scale(0.95);
 
