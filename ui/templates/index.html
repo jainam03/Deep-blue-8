@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/try.css') }}">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/index.css') }}">
     <title>Summary Generator</title>
 </head>
 
@@ -22,34 +22,3 @@
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <html>
-
-<head>
-    <title>Summary Generator</title>
-
-</head>
-
-<body>
-    <form action="{{url_for('summarization')}}" method="post" enctype="multipart/form-data">
-        <h3>Enter a Video File:</h3>
-        <input type="file" name="video" accept=".mp4">
-        <h3>Enter a CSV File:</h3>
-        <input type="file" name="csv_file" accept=".csv"><br><br>
-        <input type="submit" value="summarize">
-    </form>
-
-</body>
-
-</html>  -->
