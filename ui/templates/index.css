@@ -1,0 +1,141 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: #1d1d1d;
+
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* gap: 2px; */
+        }
+
+        h1 {
+            letter-spacing: 2px;
+            color: #3a54bb;
+
+            font-size: xxx-large;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+
+            gap: 10px;
+
+            background: #363636;
+            padding: 20px 25px;
+            margin: 40px 0 40px 0;
+            min-width: 600px;
+
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            font-weight: bold;
+            letter-spacing: 1.5px;
+            color: #fff;
+        }
+
+        input[type="file"] {
+            border: 0 solid #ddd;
+            border-radius: 5px;
+
+            background-color: #363636;
+            padding: 10px;
+            margin: 5px 0;
+
+            font-size: inherit;
+            letter-spacing: 2px;
+            color: #fff;
+
+            cursor: pointer;
+
+            box-shadow:0 3px 8px rgba(0, 0, 0, 0.5);
+
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        input[type="file"]::file-selector-button {
+            background-color: #3a54bb;
+            color: #fff;
+            
+            font-size: 15px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            /* letter-spacing: 2px; */
+            padding: 10px;
+            margin: 0 10px 0 0;
+
+            border-radius: 5px;
+            border: none;
+            outline: none;
+
+            cursor: pointer;
+
+            transition: 0.3s;
+        }
+        input[type="file"]::file-selector-button:hover,
+        input[type="file"]::file-selector-button:focus {
+
+            transform: scale(0.965);
+
+            outline: none;
+        }
+        input[type="file"]::file-selector-button:active {
+
+            transform: scale(0.95);
+
+            transition: 0.3s;
+        }
+
+        .submit {
+            display: flex;
+            justify-content: center;
+            margin: 25px 0 15px 0;
+        }
+
+        input[type="submit"] {
+            background-color: #3a54bb;
+            color: #fff;
+
+            cursor: pointer;
+
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            padding: 10px;
+
+            border: none;
+            outline: none;
+            border-radius: 10px;
+
+            transition: 0.2s;
+        }
+        input[type="submit"]:hover,
+        input[type="submit"]:focus {
+            outline: none;
+            background-color: #3a54bb;
+
+            transform: scale(0.965);
+
+            transition: 0.3s;
+        }
+        input[type="submit"]:active {
+            background-color: #3a54bb;
+            
+            transform: scale(0.95);
+
+            transition: 0.1s;
+        }
