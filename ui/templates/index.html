@@ -36,12 +36,13 @@
     <script type="text/javascript">
         const inputEl = document.querySelector('.input');
         const formEl = document.getElementById("form-el")
-
+        inputEl.checked = JSON.parse(localStorage.getItem("mode"))
         const bodyEl = document.querySelector('body')
 
         const submit = document.getElementById("submit")
         const loader = document.getElementById("loading")
 
+        updateBody()
         function updateBody() {
             if (inputEl.checked) {
                 bodyEl.style.background = "black";
@@ -50,6 +51,8 @@
                 bodyEl.style.background = "white";
                 formEl.style.background = "white";
             }
+
+            updateLocalStorage()
 
         }
 
