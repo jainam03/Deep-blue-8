@@ -4,192 +4,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/index.css') }}">
+    <!-- <link rel="stylesheet" href="./index.css"> -->
     <title>Summary Generator</title>
-    <style>
-        
-        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-
-            font-family: 'Poppins', sans-serif;
-        }
-
-        body {
-            background: #1d1d1d;
-
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            /* gap: 2px; */
-        }
-
-        h1 {
-            letter-spacing: 2px;
-            background-color: #62b0f0;
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        form {
-            display: flex;
-            flex-direction: column;
-
-            gap: 10px;
-
-            background: #363636;
-            padding: 20px 25px;
-            margin: 40px 0 40px 0;
-            min-width: 600px;
-
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        label {
-            font-weight: bold;
-            letter-spacing: 1.5px;
-            color: #fff;
-        }
-
-        input[type="file"] {
-            border: 0 solid #ddd;
-            border-radius: 5px;
-
-            background-color: #363636;
-            padding: 10px;
-            margin: 5px 0;
-
-            font-size: inherit;
-            letter-spacing: 2px;
-            color: #fff;
-
-            cursor: pointer;
-
-            box-shadow:0 3px 8px rgba(0, 0, 0, 0.5);
-
-            text-align: center;
-            vertical-align: middle;
-        }
-
-        input[type="file"]::file-selector-button {
-            background-color: #62b0f0;
-            
-            font-size: 15px;
-            font-weight: 600;
-            letter-spacing: 2px;
-            /* letter-spacing: 2px; */
-            padding: 10px;
-            margin: 0 10px 0 0;
-
-            border-radius: 5px;
-            border: none;
-            outline: none;
-
-            cursor: pointer;
-
-            transition: 0.3s;
-        }
-        input[type="file"]::file-selector-button:hover,
-        input[type="file"]::file-selector-button:focus {
-
-            transform: scale(0.95);
-
-            transition: 0.3s;
-        }
-        input[type="file"]::file-selector-button:active {
-
-            transform: scale(0.9);
-
-            transition: 0.3s;
-        }
-
-        .submit {
-            display: flex;
-            justify-content: center;
-            margin: 25px 0 15px 0;
-        }
-
-        input[type="submit"] {
-            background-color: #62b0f0;
-
-            cursor: pointer;
-
-            font-size: 23px;
-            font-weight: 800;
-            letter-spacing: 2px;
-            padding: 10px;
-
-            border: none;
-            border-radius: 10px;
-
-            transition: 0.2s;
-        }
-        input[type="submit"]:hover,
-        input[type="submit"]:focus {
-            background-color: #62b0f0;
-
-            transform: scale(0.95);
-
-            transition: 0.3s;
-        }
-        input[type="submit"]:active {
-            background-color: #62b0f0;
-            
-            transform: scale(0.95);
-
-            transition: 0.1s;
-        }
-    </style>
 </head>
 
 <body>
-    <h1>Summary Generator</h1>
-    <form action="{{url_for('summarization')}}" method="post" enctype="multipart/form-data">
-        <label for="video-file">Enter a Video File:</label>
-        <input type="file" name="video" id="video-file" accept=".mp4">
-        <label for="csv-file">Enter a CSV File:</label>
-        <input type="file" name="csv_file" id="csv-file" accept=".csv">
-        <div class="submit">
-            <input type="submit" value="Generate Summary">
-        </div>
-    </form>
+    <div class="toggleMode-div">
+        <input type="checkbox" id="dark-mode" class="input">
+        <label for="dark-mode" class="label">
+            <div class="circle"></div>
+        </label>
+    </div>
+    <br>
+    <div class="card-container">
+        <h1>Summary Generator</h1>
+        <form action="{{url_for('summarization')}}" method="post" enctype="multipart/form-data" id="form-el">
+            <label for="video-file">Enter a Video File:</label>
+            <input type="file" name="video" id="video-file" accept=".mp4">
+            <label for="csv-file">Enter a CSV / XLS File:</label>
+            <input type="file" name="csv_file" id="csv-file" accept=".csv">
+            <div class="submit">
+                <input type="submit" value="Generate Summary">
+            </div>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        const inputEl = document.querySelector('.input');
+        const formEl = document.getElementById("form-el");
+        const videoFile = document.getElementById("video-file"); 
+
+        const bodyEl = document.querySelector('body')
+
+        function updateBody() {
+            if (inputEl.checked) {
+                bodyEl.style.background = "black";
+                formEl.style.background = "gray";
+                videoFile.style.background = ""
+            } else {
+                bodyEl.style.background = "white";
+                formEl.style.background = "white";
+            }
+
+        }
+
+        inputEl.addEventListener("click", function () {
+            updateBody()
+        })
+    </script>
 </body>
 
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-<!-- <html>
-
-<head>
-    <title>Summary Generator</title>
-
-</head>
-
-<body>
-    <form action="{{url_for('summarization')}}" method="post" enctype="multipart/form-data">
-        <h3>Enter a Video File:</h3>
-        <input type="file" name="video" accept=".mp4">
-        <h3>Enter a CSV File:</h3>
-        <input type="file" name="csv_file" accept=".csv"><br><br>
-        <input type="submit" value="summarize">
-    </form>
-
-</body>
-
-</html>  -->
