@@ -25,23 +25,27 @@
             <label for="csv-file">Enter a CSV / XLS File:</label>
             <input type="file" name="csv_file" id="csv-file" accept=".csv">
             <div class="submit">
-                <input type="submit" value="Generate Summary">
+                <input id="submit" type="submit" value="Generate Summary">
             </div>
-        </form>
-    </div>
 
+        </form>
+        <div class="loader-div">
+            <div id="loading"></div>
+        </div>
+    </div>
     <script type="text/javascript">
         const inputEl = document.querySelector('.input');
-        const formEl = document.getElementById("form-el");
-        const videoFile = document.getElementById("video-file"); 
+        const formEl = document.getElementById("form-el")
 
         const bodyEl = document.querySelector('body')
+
+        const submit = document.getElementById("submit")
+        const loader = document.getElementById("loading")
 
         function updateBody() {
             if (inputEl.checked) {
                 bodyEl.style.background = "black";
                 formEl.style.background = "gray";
-                videoFile.style.background = ""
             } else {
                 bodyEl.style.background = "white";
                 formEl.style.background = "white";
@@ -51,7 +55,18 @@
 
         inputEl.addEventListener("click", function () {
             updateBody()
+            updateLocalStorage()
         })
+
+        function updateLocalStorage() {
+            localStorage.setItem("mode", JSON.stringify(inputEl.checked))
+        }
+
+        submit.addEventListener("click", function () {
+            loader.style.display = "block";
+            loader.stlye.alignItems = "center"
+        })
+
     </script>
 </body>
 

@@ -220,3 +220,39 @@ input[type="submit"]:active {
         transform: translateX(0px);
     }
 }
+
+.loader-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    margin: 0 auto;
+    padding: 0;
+}
+
+#loading {
+    display: none;
+
+    width: 40px;
+    height: 40px;
+
+    margin: 0;
+    padding: 0;
+
+    border-radius: 50%;
+
+    border: 6px solid lightgray;
+    border-top: 5px solid #3a54bb;
+
+    animation: loading 1s linear infinite;
+}
+
+@keyframes loading {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
