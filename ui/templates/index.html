@@ -5,20 +5,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/index.css') }}">
+    <!-- <link rel="stylesheet" href="./index.css"> -->
     <title>Summary Generator</title>
 </head>
 
 <body>
-    <h1>Summary Generator</h1>
-    <form action="{{url_for('summarization')}}" method="post" enctype="multipart/form-data">
-        <label for="video-file">Enter a Video File:</label>
-        <input type="file" name="video" id="video-file" accept=".mp4">
-        <label for="csv-file">Enter a CSV / XLS  File:</label>
-        <input type="file" name="csv_file" id="csv-file" accept=".csv">
-        <div class="submit">
-            <input type="submit" value="Generate Summary">
-        </div>
-    </form>
+    <div class="toggleMode-div">
+        <input type="checkbox" id="dark-mode" class="input">
+        <label for="dark-mode" class="label">
+            <div class="circle"></div>
+        </label>
+    </div>
+    <br>
+    <div class="card-container">
+        <h1>Summary Generator</h1>
+        <form action="{{url_for('summarization')}}" method="post" enctype="multipart/form-data" id="form-el">
+            <label for="video-file">Enter a Video File:</label>
+            <input type="file" name="video" id="video-file" accept=".mp4">
+            <label for="csv-file">Enter a CSV / XLS File:</label>
+            <input type="file" name="csv_file" id="csv-file" accept=".csv">
+            <div class="submit">
+                <input type="submit" value="Generate Summary">
+            </div>
+        </form>
+    </div>
+
+    <script type="text/javascript">
+        const inputEl = document.querySelector('.input');
+        const formEl = document.getElementById("form-el");
+        const videoFile = document.getElementById("video-file"); 
+
+        const bodyEl = document.querySelector('body')
+
+        function updateBody() {
+            if (inputEl.checked) {
+                bodyEl.style.background = "black";
+                formEl.style.background = "gray";
+                videoFile.style.background = ""
+            } else {
+                bodyEl.style.background = "white";
+                formEl.style.background = "white";
+            }
+
+        }
+
+        inputEl.addEventListener("click", function () {
+            updateBody()
+        })
+    </script>
 </body>
 
 </html>
