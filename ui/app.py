@@ -10,6 +10,8 @@ import nltk.downloader
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn.metrics.pairwise import cosine_similarity
 import xlrd
 import time
 import codecs
@@ -82,7 +84,37 @@ def summarization():
 
     clip.close()
 
-    return render_template('preview.html', result21=summary, h=hours, m=mins, ss=secs, c=attendee_value) , delete_files(file_paths)
+    action_item = find_action_item(text)
+
+
+    return render_template('preview.html', result21=summary, h=hours, m=mins, ss=secs, c=attendee_value , d = action_item) 
+# , delete_files(file_paths)
+
+
+
+
+def find_action_item(text):
+    array_text = text.split('. ')
+    actions =  ["Call for backup or support if necessary", "Review sales data"]
+    actions = [' '.join([word.lower() for word in sentence.split() if word.lower() ]) for sentence in actions]
+    array_text = [' '.join([word.lower() for word in sentence.split() if word.lower() ]) for sentence in array_text]
+    
+    vectorizer = TfidfVectorizer()
+    vectors = vectorizer.fit_transform(actions + array_text)
+    similarity_scores = cosine_similarity(vectors[:len(actions)], vectors[len(actions):])
+    
+    results = []
+    for i, sentence in enumerate(actions):
+    # for j in similarity_scores > 0.0 :
+        most_similar_indices = similarity_scores[i].argsort()[::-1][:5]
+
+        for index in most_similar_indices:
+            if similarity_scores[i][index] > 0.4:
+                results.append(array_text[index])
+
+    return results
+
+                
 
 
 
@@ -169,15 +201,15 @@ def attendee(fsv):
 # Contains the duration of the video in terms of seconds
 
 
-def delete_files(file_paths):
-    time.sleep(120)
-    for file_path in file_paths:
-        try:
-            # delete the file
-            os.remove(file_path)
-            print(f"{file_path} has been deleted")
-        except OSError as error:
-            print(error)
+# def delete_files(file_paths):
+#     time.sleep(120)
+#     for file_path in file_paths:
+#         try:
+#             # delete the file
+#             os.remove(file_path)
+#             print(f"{file_path} has been deleted")
+#         except OSError as error:
+#             print(error)
 
 
 
