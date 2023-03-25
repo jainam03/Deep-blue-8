@@ -4,21 +4,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/index.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/index.css') }}">
     <!-- <link rel="stylesheet" href="./index.css"> -->
     <title>Summary Generator</title>
 </head>
 
 <body>
-    <div class="toggleMode-div">
-        <input type="checkbox" id="dark-mode" class="input">
-        <label for="dark-mode" class="label">
-            <div class="circle"></div>
-        </label>
+
+    <div class="nav-bar">
+        <div class="toggleMode-div">
+            <input type="checkbox" id="dark-mode" class="input">
+            <label for="dark-mode" class="label">
+                <div class="circle"></div>
+            </label>
+        </div>
     </div>
     <br>
     <div class="card-container">
-        <h1>Summary Generator</h1>
+        <h1>Teams meeting summarizer</h1>
         <form action="{{url_for('summarization')}}" method="post" enctype="multipart/form-data" id="form-el">
             <label for="video-file">Enter a Video File:</label>
             <input type="file" name="video" id="video-file" accept=".mp4">
