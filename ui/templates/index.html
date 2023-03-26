@@ -3,25 +3,23 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/index.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/index.css') }}">
     <!-- <link rel="stylesheet" href="./index.css"> -->
     <title>Summary Generator</title>
 </head>
 
 <body>
 
-    <div class="nav-bar">
-        <div class="toggleMode-div">
-            <input type="checkbox" id="dark-mode" class="input">
-            <label for="dark-mode" class="label">
-                <div class="circle"></div>
-            </label>
-        </div>
+    <div class="toggleMode-div">
+        <input type="checkbox" id="dark-mode" class="input">
+        <label for="dark-mode" class="label">
+            <div class="circle"></div>
+        </label>
     </div>
     <br>
     <div class="card-container">
-        <h1>Teams meeting summarizer</h1>
+        <h1>Summary Generator</h1>
         <form action="{{url_for('summarization')}}" method="post" enctype="multipart/form-data" id="form-el">
             <label for="video-file">Enter a Video File:</label>
             <input type="file" name="video" id="video-file" accept=".mp4">
@@ -38,12 +36,16 @@
     </div>
     <script type="text/javascript">
         const inputEl = document.querySelector('.input');
-        const formEl = document.getElementById("form-el")
-        inputEl.checked = JSON.parse(localStorage.getItem("mode"))
-        const bodyEl = document.querySelector('body')
+        inputEl.checked = JSON.parse(localStorage.getItem("mode"));
+        const formEl = document.getElementById("form-el");
+        const bodyEl = document.querySelector('body');
 
-        const submit = document.getElementById("submit")
-        const loader = document.getElementById("loading")
+        const submit = document.getElementById("submit");
+        const loader = document.getElementById("loading");
+
+        bodyEl.addEventListener("onload", function () {
+            alert("Hello brother!")
+        })
 
         updateBody()
         function updateBody() {

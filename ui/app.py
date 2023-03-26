@@ -20,7 +20,6 @@ import codecs
 app = Flask(__name__)
 
 
-
 @app.route('/')
 def index():
     return render_template('index.html')
@@ -80,35 +79,32 @@ def summarization():
     # csv input
     # fsv = "meetingAttendanceList.csv"
     attendee_value = attendee(fsv)
-    
-    file_paths = ["static\\videos\\" +video.filename,"audio1_file.mp3" , fsv ,"transcript.txt"]
+
+    file_paths = ["static\\videos\\" + video.filename,
+                  "audio1_file.mp3", fsv, "transcript.txt"]
 
     clip.close()
 
     action_item = find_action_item(text)
 
-
-    return render_template('preview.html', result21=summary, h=hours, m=mins, ss=secs, c=attendee_value , d = action_item) 
+    return render_template('preview.html', result21=summary, h=hours, m=mins, ss=secs, c=attendee_value, d=action_item)
 # , delete_files(file_paths)
-
-
 
 
 def find_action_item(text):
     array_text = text.split('. ')
-    actions =  ["backup ", "support", "Review sales data" ,"Update a document or report","Schedule a work","Follow up" ,"Schedule a meeting","Make a decision","Provide input or feedback","Implement a solution","Coordinate with other teams","Research best practices","Develop a plan","Prepare for next meeting",
-                "Prioritize tasks","create a daily to-do list","Contact a stakeholder","training session","generate report"," Implement a policy","encourage employees","monitor progress","deadline",
-                "review progress","high demand"]
+    actions =  ["Call for backup or support if necessary", "Review sales data"]
     actions = [' '.join([word.lower() for word in sentence.split() if word.lower() ]) for sentence in actions]
     array_text = [' '.join([word.lower() for word in sentence.split() if word.lower() ]) for sentence in array_text]
     
     vectorizer = TfidfVectorizer()
     vectors = vectorizer.fit_transform(actions + array_text)
-    similarity_scores = cosine_similarity(vectors[:len(actions)], vectors[len(actions):])
-    
+    similarity_scores = cosine_similarity(
+        vectors[:len(actions)], vectors[len(actions):])
+
     results = []
     for i, sentence in enumerate(actions):
-    # for j in similarity_scores > 0.0 :
+        # for j in similarity_scores > 0.0 :
         most_similar_indices = similarity_scores[i].argsort()[::-1][:5]
 
         for index in most_similar_indices:
@@ -116,9 +112,6 @@ def find_action_item(text):
                 results.append(array_text[index])
 
     return results
-
-                
-
 
 
 def summarize(text, ratio=0.2):
@@ -148,24 +141,21 @@ def attendee(fsv):
         # # Count the number of non-empty cells in the specified column
         # count = sum([1 for cell in sheet.col(attendee_column) if cell.value])-1
 
-    
         unique_attendees = set()  # a set to store unique attendees
 
         workbook = xlrd.open_workbook(fsv)  # open the XLS file
         worksheet = workbook.sheet_by_index(0)  # select the first worksheet
 
         for row_idx in range(1, worksheet.nrows):
-    # assuming the attendee name is in the first column of the XLS file
-            attendee = worksheet.cell_value(row_idx, 0).strip()  # remove leading/trailing whitespaces
+            # assuming the attendee name is in the first column of the XLS file
+            # remove leading/trailing whitespaces
+            attendee = worksheet.cell_value(row_idx, 0).strip()
             if attendee:  # check if the attendee name is not an empty string
-                unique_attendees.add(attendee)  # add the attendee name to the set of unique attendees
+                # add the attendee name to the set of unique attendees
+                unique_attendees.add(attendee)
 
         count = len(unique_attendees)
 
-    
-    
-    
-    
     elif fsv.endswith('.csv'):
         # Read the CSV file using the csv module
         # with open(fsv, "r") as file:
@@ -174,17 +164,18 @@ def attendee(fsv):
         # for row in csvReader:
         #     if row[attendee_column]:
         #         count += 1
-        
 
         unique_attendees = set()  # a set to store unique attendees
 
-        with open(fsv , 'r') as file:
+        with open(fsv, 'r') as file:
             reader = csv.reader(file)
             for row in reader:
-        # assuming the attendee name is in the first column of the CSV file
-                attendee = row[0].strip()  # remove leading/trailing whitespaces
+                # assuming the attendee name is in the first column of the CSV file
+                # remove leading/trailing whitespaces
+                attendee = row[0].strip()
                 if attendee:  # check if the attendee name is not an empty string
-                    unique_attendees.add(attendee)  # add the attendee name to the set of unique attendees
+                    # add the attendee name to the set of unique attendees
+                    unique_attendees.add(attendee)
 
         count = len(unique_attendees)
 
@@ -194,12 +185,9 @@ def attendee(fsv):
 
     else:
         raise ValueError("Unsupported file format")
-    
-
 
     return count
-    
-    
+
 
 # Contains the duration of the video in terms of seconds
 
@@ -213,10 +201,6 @@ def attendee(fsv):
 #             print(f"{file_path} has been deleted")
 #         except OSError as error:
 #             print(error)
-
-
-
-
 
 
 if __name__ == '__main__':

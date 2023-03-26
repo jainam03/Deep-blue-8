@@ -20,26 +20,16 @@ body {
 }
 
 
-h1 {
-    text-align: center;
-    letter-spacing: 2px;
-    color: #3a54bb;
-
-    font-size: 40px;
-}
-
-.nav-bar {
-    width: 100%;
-}
 
 .toggleMode-div {
     width: 100%;
     display: flex;
     justify-content: flex-end;
 
-    margin: 20px 60px 0 0;
+    margin: 20px 50px 0 0;
 
 }
+
 
 .input {
     visibility: hidden;
@@ -84,6 +74,14 @@ h1 {
     background-color: black;
 }
 
+h1 {
+    text-align: center;
+    letter-spacing: 2px;
+    color: #3a54bb;
+
+    font-size: xxx-large;
+}
+
 form {
     display: flex;
     flex-direction: column;
@@ -100,7 +98,6 @@ form {
 }
 
 label {
-    font-size: x-large;
     font-weight: bold;
     letter-spacing: 1.5px;
     color: black;
@@ -203,6 +200,8 @@ input[type="submit"]:active {
 
     transition: 0.1s;
 }
+
+
 
 @keyframes toggleOn {
     0% {
