@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/preview.css') }}">
-    <!-- <link rel="stylesheet" href="./preview.css"> -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/preview.css') }}">
     <title>Summary</title>
     <style>
 
@@ -13,12 +12,6 @@
 </head>
 
 <body>
-    <div class="toggleMode-div">
-        <input type="checkbox" id="dark-mode" class="input">
-        <label for="dark-mode" class="label">
-            <div class="circle"></div>
-        </label>
-    </div>
     <h1>Summary Generator:</h1>
     <div class="container1">
         <label for="output">Summary:</label>
@@ -28,37 +21,11 @@
                 <li class="bullet">The Length of the given Video is {{h}} hours {{m}} minutes and {{ss}} seconds</li>
                 <br>
                 <li class="bullet">The Total no. of Attendees that were present in the Metting are : {{c}}</li>
+                <br>
+                <li class="bullet">Action Items are : {{d}}</li>
             </ul>
         </div>
     </div>
-    <script type="text/javascript">
-        const inputEl = document.querySelector('.input');
-        inputEl.checked = JSON.parse(localStorage.getItem("mode"));
-        const container1 = document.querySelector('.container1');
-        const bodyEl = document.querySelector('body');
-
-        updateBody()
-        function updateBody() {
-            if (inputEl.checked) {
-                bodyEl.style.background = "black";
-                container1.style.background = "#ddd";
-            } else {
-                bodyEl.style.background = "white";
-                container1.style.background = "white";
-            }
-
-            updateLocalStorage()
-        }
-
-        inputEl.addEventListener("click", function () {
-            updateBody()
-            updateLocalStorage()
-        })
-
-        function updateLocalStorage() {
-            localStorage.setItem("mode", JSON.stringify(inputEl.checked))
-        }
-    </script>
 </body>
 
 </html>
