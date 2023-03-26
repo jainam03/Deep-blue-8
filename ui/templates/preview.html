@@ -30,7 +30,12 @@
                 <br>
                 <li class="bullet">The Total no. of Attendees that were present in the Metting are : {{c}}</li>
                 <br>
-                <li class="bullet">Action Items are : {{d}}</li>
+                <li class="bullet">Action Items are :</li>
+                <ul>
+                {% for item in d %}
+                    <li>{{ item }}</li>
+                {% endfor %}
+                </ul>
             </ul>
         </div>
     </div>

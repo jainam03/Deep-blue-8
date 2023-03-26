@@ -15,6 +15,9 @@ from sklearn.metrics.pairwise import cosine_similarity
 import xlrd
 import time
 import codecs
+from transformers import pipeline, AutoTokenizer, AutoModelWithLMHead
+model = AutoModelWithLMHead.from_pretrained("t5-base")
+tokenizer = AutoTokenizer.from_pretrained("t5-base")
 
 # nltk.download('punkt')
 app = Flask(__name__)
@@ -93,7 +96,7 @@ def summarization():
 
 def find_action_item(text):
     array_text = text.split('. ')
-    actions =  ["Call for backup or support if necessary", "Review sales data"]
+    actions =  ["backup","support","Project title","deadline","Schedule","decision","Prepare","Contact","develop budget","follow up","demand"]
     actions = [' '.join([word.lower() for word in sentence.split() if word.lower() ]) for sentence in actions]
     array_text = [' '.join([word.lower() for word in sentence.split() if word.lower() ]) for sentence in array_text]
     
@@ -108,18 +111,47 @@ def find_action_item(text):
         most_similar_indices = similarity_scores[i].argsort()[::-1][:5]
 
         for index in most_similar_indices:
-            if similarity_scores[i][index] > 0.1:
+            if similarity_scores[i][index] > 0.3:
+              
                 results.append(array_text[index])
 
     return results
 
 
-def summarize(text, ratio=0.2):
-    parser = PlaintextParser.from_string(text, Tokenizer("english"))
-    summarizer = LexRankSummarizer()
-    summary = summarizer(parser.document, ratio *
-                         len(parser.document.sentences))
-    return " ".join(map(str, summary))
+def summarize(text):
+    # parser = PlaintextParser.from_string(text, Tokenizer("english"))
+    # summarizer = LexRankSummarizer()
+    # summary = summarizer(parser.document, ratio *
+    #                      len(parser.document.sentences))
+    # return " ".join(map(str, summary))
+
+    
+# Define summarization pipeline
+    summarizer = pipeline("summarization", model=model, tokenizer=tokenizer)
+    summary_text = summarizer(text, max_length=200, min_length=50, do_sample=False)
+    sum = (summary_text[0]['summary_text'])
+    sentences = sum.split(".")
+
+# Create an empty list to store the capitalized sentences
+    capitalized_sentences = []
+
+# Loop through each sentence in the list
+    for sentence in sentences:
+    # Strip any leading or trailing whitespace from the sentence
+        sentence = sentence.strip()
+
+        if sentence:
+        # Capitalize the first letter of the sentence
+            capitalized_sentence = sentence[0].upper() + sentence[1:]
+        else:
+            capitalized_sentence = sentence
+   
+    # Append the capitalized sentence to the list
+        capitalized_sentences.append(capitalized_sentence)
+
+    capitalized_text = ". ".join(capitalized_sentences)
+
+    return capitalized_text
 
 
 def convert(seconds):
