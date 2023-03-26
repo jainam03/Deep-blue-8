@@ -52,6 +52,7 @@ def summarization():
         return 'No video selected'
     if video and allowed_file(video.filename):
         video.save('static/videos/' + video.filename)
+    else: 'Invalid video file'
 
     csv_file = request.files['csv_file']
     fsv = csv_file.filename
@@ -95,7 +96,9 @@ def summarization():
 
 def find_action_item(text):
     array_text = text.split('. ')
-    actions =  ["Call for backup or support if necessary", "Review sales data"]
+    actions =  ["backup ", "support", "Review sales data" ,"Update a document or report","Schedule a work","Follow up" ,"Schedule a meeting","Make a decision","Provide input or feedback","Implement a solution","Coordinate with other teams","Research best practices","Develop a plan","Prepare for next meeting",
+                "Prioritize tasks","create a daily to-do list","Contact a stakeholder","training session","generate report"," Implement a policy","encourage employees","monitor progress","deadline",
+                "review progress","high demand"]
     actions = [' '.join([word.lower() for word in sentence.split() if word.lower() ]) for sentence in actions]
     array_text = [' '.join([word.lower() for word in sentence.split() if word.lower() ]) for sentence in array_text]
     
@@ -109,7 +112,7 @@ def find_action_item(text):
         most_similar_indices = similarity_scores[i].argsort()[::-1][:5]
 
         for index in most_similar_indices:
-            if similarity_scores[i][index] > 0.4:
+            if similarity_scores[i][index] > 0.1:
                 results.append(array_text[index])
 
     return results
