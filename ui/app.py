@@ -6,15 +6,13 @@ import os
 import csv
 import moviepy.editor as mp
 import nltk
-# import nltk.downloader
+import nltk.downloader
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lex_rank import LexRankSummarizer
 import xlrd
 import time
 import codecs
-# from flask import Flask, render_template, make_response
-# import pdfkit
 
 # nltk.download('punkt')
 app = Flask(__name__)
@@ -84,16 +82,15 @@ def summarization():
 
     clip.close()
 
-    return render_template('preview.html', result21=summary, h=hours, m=mins, ss=secs, c=attendee_value) 
-#    , delete_files(file_paths)
-
+    return render_template('preview.html', result21=summary, h=hours, m=mins, ss=secs, c=attendee_value) , delete_files(file_paths)
 
 
 
 def summarize(text, ratio=0.2):
     parser = PlaintextParser.from_string(text, Tokenizer("english"))
     summarizer = LexRankSummarizer()
-    summary = summarizer(parser.document, ratio *len(parser.document.sentences))
+    summary = summarizer(parser.document, ratio *
+                         len(parser.document.sentences))
     return " ".join(map(str, summary))
 
 
@@ -172,38 +169,19 @@ def attendee(fsv):
 # Contains the duration of the video in terms of seconds
 
 
-# def delete_files(file_paths):
-#     time.sleep(120)
-#     for file_path in file_paths:
-#         try:
-#             # delete the file
-#             os.remove(file_path)
-#             print(f"{file_path} has been deleted")
-#         except OSError as error:
-#             print(error)
+def delete_files(file_paths):
+    time.sleep(120)
+    for file_path in file_paths:
+        try:
+            # delete the file
+            os.remove(file_path)
+            print(f"{file_path} has been deleted")
+        except OSError as error:
+            print(error)
 
 
 
-# def home():
-#     # This is just an example template. Replace it with your own HTML code.
-#     return render_template('preview.html')
 
-# @app.route('/download_pdf', methods=['POST'])
-# def download_pdf():
-#     # Get the HTML content from the POST request
-#     path = "ui\templates\preview.html"
-#     # return send_file(path,as_atachment=True)
-#     html = request.form['html_content']
-    
-#     # Use pdfkit to convert HTML to PDF
-#     pdf = pdfkit.from_string(html, False)
-    
-#     # Set response headers
-#     response = make_response(pdf)
-#     response.headers['Content-Type'] = 'application/pdf'
-#     response.headers['Content-Disposition'] = 'attachment; filename=preview.pdf'
-    
-#     return response
 
 
 if __name__ == '__main__':

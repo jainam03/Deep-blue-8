@@ -3,13 +3,14 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/index.css') }}">
     <!-- <link rel="stylesheet" href="./index.css"> -->
     <title>Summary Generator</title>
 </head>
 
 <body>
+
     <div class="toggleMode-div">
         <input type="checkbox" id="dark-mode" class="input">
         <label for="dark-mode" class="label">
@@ -25,33 +26,55 @@
             <label for="csv-file">Enter a CSV / XLS File:</label>
             <input type="file" name="csv_file" id="csv-file" accept=".csv">
             <div class="submit">
-                <input type="submit" value="Generate Summary">
+                <input id="submit" type="submit" value="Generate Summary">
             </div>
-        </form>
-    </div>
 
+        </form>
+        <div class="loader-div">
+            <div id="loading"></div>
+        </div>
+    </div>
     <script type="text/javascript">
         const inputEl = document.querySelector('.input');
+        inputEl.checked = JSON.parse(localStorage.getItem("mode"));
         const formEl = document.getElementById("form-el");
-        const videoFile = document.getElementById("video-file"); 
+        const bodyEl = document.querySelector('body');
 
-        const bodyEl = document.querySelector('body')
+        const submit = document.getElementById("submit");
+        const loader = document.getElementById("loading");
 
+        bodyEl.addEventListener("onload", function () {
+            alert("Hello brother!")
+        })
+
+        updateBody()
         function updateBody() {
             if (inputEl.checked) {
                 bodyEl.style.background = "black";
                 formEl.style.background = "gray";
-                videoFile.style.background = ""
             } else {
                 bodyEl.style.background = "white";
                 formEl.style.background = "white";
             }
 
+            updateLocalStorage()
+
         }
 
         inputEl.addEventListener("click", function () {
             updateBody()
+            updateLocalStorage()
         })
+
+        function updateLocalStorage() {
+            localStorage.setItem("mode", JSON.stringify(inputEl.checked))
+        }
+
+        submit.addEventListener("click", function () {
+            loader.style.display = "block";
+            loader.stlye.alignItems = "center"
+        })
+
     </script>
 </body>
 
