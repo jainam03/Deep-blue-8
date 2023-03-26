@@ -67,3 +67,56 @@
             font-weight: bold;
 
         }
+
+        .download_pdf {
+            display: flex;
+            justify-content: center;
+            margin: 25px 0 15px 0;
+        }
+        
+        input[type="download"] {
+            background-color: #3a54bb;
+            color: #fff;
+            box-shadow: 0 5px 10px rgba(0, 0, 0, 0.4);
+        
+            cursor: pointer;
+        
+            font-size: 23px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            padding: 10px;
+        
+            border: none;
+            outline: none;
+            border-radius: 10px;
+        
+            transition: 0.2s;
+        }
+        
+        input[type="download"]:hover,
+        input[type="download"]:focus {
+            outline: none;
+            background-color: #3a54bb;
+        
+            transform: scale(0.965);
+        
+            transition: 0.3s;
+        }
+        
+        input[type="download"]:active {
+            background-color: #3a54bb;
+        
+            transform: scale(0.95);
+        
+            transition: 0.1s;
+        }
+        
+        .toggleMode-div {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+        
+            margin: 20px 50px 0 0;
+            
+        }
+        
