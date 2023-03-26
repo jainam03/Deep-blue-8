@@ -4,7 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/preview.css') }}">
+    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/preview.css') }}"> -->
+    <link rel="stylesheet" href="./preview.css">
     <title>Summary</title>
     <style>
 
@@ -12,8 +13,15 @@
 </head>
 
 <body>
+    <div class="toggleMode-div">
+        <input type="checkbox" id="dark-mode" class="input">
+        <label for="dark-mode" class="label">
+            <div class="circle"></div>
+        </label>
+    </div>
+
     <h1>Summary Generator:</h1>
-    <div class="container1">
+    <div class="container1" id="container1">
         <label for="output">Summary:</label>
         <textarea id="output">{{result21}}</textarea>
         <div class="container2">
@@ -26,6 +34,36 @@
             </ul>
         </div>
     </div>
+    <script type="text/javascript">
+        const inputEl = document.querySelector('.input');
+        inputEl.checked = JSON.parse(localStorage.getItem("mode"));
+        const container1 = document.getElementById('container1')
+        const bodyEl = document.querySelector('body');
+        const submit = document.getElementById("submit");
+
+        updateBody();
+        function updateBody() {
+            if (inputEl.checked) {
+                bodyEl.style.background = "black";
+                container1.style.background = "gray";
+            } else {
+                bodyEl.style.background = "white";
+                container1.style.background = "#fff"
+            }
+
+            updateLocalStorage()
+        }
+
+        inputEl.addEventListener("click", function () {
+            updateBody()
+            updateLocalStorage()
+        })
+
+        function updateLocalStorage() {
+            localStorage.setItem("mode", JSON.stringify(inputEl.checked))
+        }
+
+    </script>
 </body>
 
 </html>
