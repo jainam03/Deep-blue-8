@@ -1,5 +1,5 @@
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request ,jsonify
 # from vdo import summarization
 import subprocess
 import os
@@ -64,9 +64,6 @@ def summarization():
     video_duration = int(clip.duration)
     hours, mins, secs = convert(video_duration)
 
-    # print("Hours:", hours)
-    # print("Minutes:", mins)
-    # print("Seconds:",secs)
     clip.audio.write_audiofile("audio1_file.mp3")
 
     # untext = !python transcribe.py audio1_file.mp3 --local
@@ -74,17 +71,15 @@ def summarization():
     audio_file = "audio1_file.mp3"
     command = ["python", "transcribe.py", audio_file, "--local"]
     result = subprocess.run(command, capture_output=True, text=True)
-    # print(result.stdout)
 
     text = ''.join(map(str, result.stdout))
-    # print(text)
+
     summary = summarize(text)
     # csv input
     # fsv = "meetingAttendanceList.csv"
     attendee_value = attendee(fsv)
 
-    file_paths = ["static\\videos\\" + video.filename,
-                  "audio1_file.mp3", fsv, "transcript.txt"]
+    file_paths = ["static\\videos\\" + video.filename,"audio1_file.mp3", fsv, "transcript.txt"]
 
     clip.close()
 
@@ -115,7 +110,10 @@ def find_action_item(text):
               
                 results.append(array_text[index])
 
+    
     return results
+
+
 
 
 def summarize(text):
@@ -125,28 +123,56 @@ def summarize(text):
     #                      len(parser.document.sentences))
     # return " ".join(map(str, summary))
 
-    
-# Define summarization pipeline
-    summarizer = pipeline("summarization", model=model, tokenizer=tokenizer)
-    summary_text = summarizer(text, max_length=200, min_length=50, do_sample=False)
-    sum = (summary_text[0]['summary_text'])
-    sentences = sum.split(".")
 
-# Create an empty list to store the capitalized sentences
+
+    summarizer = pipeline("summarization", model=model, tokenizer=tokenizer)
+
+
+# Split the input text into sentences using NLTK
+    sentences1 = nltk.sent_tokenize(text)
+
+# Define maximum length of each chunk
+    max_length = 512
+
+# Split the sentences into chunks of up to 512 tokens
+    chunks = []
+    current_chunk = ""
+    for sentence in sentences1:
+        # Add the sentence to the current chunk if it's length is within the maximum length
+        if len(current_chunk) + len(sentence) < max_length:
+            current_chunk += sentence
+        else:
+            # If the current chunk is longer than the maximum length, add it to the chunks list and start a new chunk with the current sentence
+            chunks.append(current_chunk.strip())
+            current_chunk = sentence
+
+# Add the last chunk to the chunks list
+    if current_chunk:
+        chunks.append(current_chunk.strip())
+
+    # Generate summary for each chunk and concatenate them into a single summary
+    summary_chunks = [summarizer(chunk, max_length=100, min_length=20, do_sample=False)[0]['summary_text'] for chunk in chunks]
+
+    summary_text = " ".join(summary_chunks)
+
+
+    sentences = summary_text.split(".")
+
+    # Create an empty list to store the capitalized sentences
     capitalized_sentences = []
 
-# Loop through each sentence in the list
+    # Loop through each sentence in the list
     for sentence in sentences:
-    # Strip any leading or trailing whitespace from the sentence
+        # Strip any leading or trailing whitespace from the sentence
         sentence = sentence.strip()
 
         if sentence:
-        # Capitalize the first letter of the sentence
+            # Capitalize the first letter of the sentence
             capitalized_sentence = sentence[0].upper() + sentence[1:]
         else:
             capitalized_sentence = sentence
-   
-    # Append the capitalized sentence to the list
+    
+        # Append the capitalized sentence to the list
         capitalized_sentences.append(capitalized_sentence)
 
     capitalized_text = ". ".join(capitalized_sentences)
@@ -209,7 +235,7 @@ def attendee(fsv):
                     # add the attendee name to the set of unique attendees
                     unique_attendees.add(attendee)
 
-        count = len(unique_attendees)
+        count = len(unique_attendees)-1
 
 # print(f'Number of unique attendees: {num_unique_attendees}')
 # for name in unique_attendees:
@@ -233,7 +259,9 @@ def attendee(fsv):
 #             print(f"{file_path} has been deleted")
 #         except OSError as error:
 #             print(error)
+        
+#     return jsonify({'result': 'Files Deleted'})
 
-
+ 
 if __name__ == '__main__':
     app.run(debug=True)
