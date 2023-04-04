@@ -1,6 +1,4 @@
-
-from flask import Flask, render_template, request ,jsonify
-# from vdo import summarization
+from flask import Flask, render_template, request, jsonify
 import subprocess
 import os
 import csv
@@ -15,11 +13,12 @@ from sklearn.metrics.pairwise import cosine_similarity
 import xlrd
 import time
 import codecs
+import re
+from datetime import datetime
 from transformers import pipeline, AutoTokenizer, AutoModelWithLMHead
 model = AutoModelWithLMHead.from_pretrained("t5-base")
 tokenizer = AutoTokenizer.from_pretrained("t5-base")
 
-# nltk.download('punkt')
 app = Flask(__name__)
 
 
@@ -28,7 +27,7 @@ def index():
     return render_template('index.html')
 
 
-ALLOWED_EXTENSIONS = ['mp4']
+ALLOWED_EXTENSIONS = ['mp4', 'vtt']
 
 
 def allowed_file(filename):
@@ -36,16 +35,6 @@ def allowed_file(filename):
 
 
 @app.route('/summarization', methods=['POST'])
-# def upload():
-#     if 'video' not in request.files:
-#         return 'No video file found'
-#     video = request.files['video']
-#     if video.filename == '':
-#         return 'No video selected'
-#     if video and allowed_file(video.filename):
-#         video.save('static/videos/' + video.filename)
-#         return render_template('preview.html', result=summary)
-#     else: 'Invalid video file'
 def summarization():
     if 'video' not in request.files:
         return 'No video file found'
@@ -53,48 +42,61 @@ def summarization():
     if video.filename == '':
         return 'No video selected'
     if video and allowed_file(video.filename):
-        video.save('static/videos/' + video.filename)
-    else: 'Invalid video file'
+        video.save(video.filename)
+    else:
+        'Invalid video file'
+
+    abc = video.filename
+
+    if abc.endswith('.vtt'):
+        text, video_duration = vtt_text(abc)
+        hours, mins, secs = convert(video_duration)
+        hours = int(hours)
+        mins = int(mins)
+        secs = int(secs)
+
+    elif abc.endswith('.mp4'):
+        clip = mp.VideoFileClip(video.filename)
+        video_duration = int(clip.duration)
+
+        hours, mins, secs = convert(video_duration)
+
+        clip.audio.write_audiofile("audio1_file.mp3")
+
+        audio_file = "audio1_file.mp3"
+        command = ["python", "transcribe.py", audio_file, "--local"]
+        result = subprocess.run(command, capture_output=True, text=True)
+
+        text = ''.join(map(str, result.stdout))
+        clip.close()
+    else:
+        print("ERROR")
 
     csv_file = request.files['csv_file']
     fsv = csv_file.filename
     csv_file.save(fsv)
 
-    clip = mp.VideoFileClip(r"static\\videos\\" + video.filename)
-    video_duration = int(clip.duration)
-    hours, mins, secs = convert(video_duration)
-
-    clip.audio.write_audiofile("audio1_file.mp3")
-
-    # untext = !python transcribe.py audio1_file.mp3 --local
-
-    audio_file = "audio1_file.mp3"
-    command = ["python", "transcribe.py", audio_file, "--local"]
-    result = subprocess.run(command, capture_output=True, text=True)
-
-    text = ''.join(map(str, result.stdout))
-
     summary = summarize(text)
-    # csv input
-    # fsv = "meetingAttendanceList.csv"
+
     attendee_value = attendee(fsv)
 
-    file_paths = ["static\\videos\\" + video.filename,"audio1_file.mp3", fsv, "transcript.txt"]
-
-    clip.close()
+    file_paths = ["static\\videos\\" + video.filename,
+                  "audio1_file.mp3", fsv, "transcript.txt"]
 
     action_item = find_action_item(text)
 
     return render_template('preview.html', result21=summary, h=hours, m=mins, ss=secs, c=attendee_value, d=action_item)
-# , delete_files(file_paths)
 
 
 def find_action_item(text):
     array_text = text.split('. ')
-    actions =  ["backup","support","Project title","deadline","Schedule","decision","Prepare","Contact","develop budget","follow up","demand"]
-    actions = [' '.join([word.lower() for word in sentence.split() if word.lower() ]) for sentence in actions]
-    array_text = [' '.join([word.lower() for word in sentence.split() if word.lower() ]) for sentence in array_text]
-    
+    actions = ["backup", "support", "Project title", "deadline", "Schedule",
+               "decision", "Prepare", "Contact", "develop budget", "follow up", "demand"]
+    actions = [' '.join([word.lower() for word in sentence.split()
+                        if word.lower()]) for sentence in actions]
+    array_text = [' '.join([word.lower() for word in sentence.split(
+    ) if word.lower()]) for sentence in array_text]
+
     vectorizer = TfidfVectorizer()
     vectors = vectorizer.fit_transform(actions + array_text)
     similarity_scores = cosine_similarity(
@@ -102,77 +104,58 @@ def find_action_item(text):
 
     results = []
     for i, sentence in enumerate(actions):
-        # for j in similarity_scores > 0.0 :
+
         most_similar_indices = similarity_scores[i].argsort()[::-1][:5]
 
         for index in most_similar_indices:
             if similarity_scores[i][index] > 0.3:
-              
+
                 results.append(array_text[index])
 
-    
     return results
 
 
-
-
 def summarize(text):
-    # parser = PlaintextParser.from_string(text, Tokenizer("english"))
-    # summarizer = LexRankSummarizer()
-    # summary = summarizer(parser.document, ratio *
-    #                      len(parser.document.sentences))
-    # return " ".join(map(str, summary))
-
-
 
     summarizer = pipeline("summarization", model=model, tokenizer=tokenizer)
 
-
-# Split the input text into sentences using NLTK
     sentences1 = nltk.sent_tokenize(text)
 
-# Define maximum length of each chunk
     max_length = 512
 
-# Split the sentences into chunks of up to 512 tokens
     chunks = []
     current_chunk = ""
     for sentence in sentences1:
-        # Add the sentence to the current chunk if it's length is within the maximum length
+
         if len(current_chunk) + len(sentence) < max_length:
             current_chunk += sentence
         else:
-            # If the current chunk is longer than the maximum length, add it to the chunks list and start a new chunk with the current sentence
+
             chunks.append(current_chunk.strip())
             current_chunk = sentence
 
-# Add the last chunk to the chunks list
     if current_chunk:
         chunks.append(current_chunk.strip())
 
-    # Generate summary for each chunk and concatenate them into a single summary
-    summary_chunks = [summarizer(chunk, max_length=100, min_length=20, do_sample=False)[0]['summary_text'] for chunk in chunks]
+    summary_chunks = [summarizer(chunk, max_length=100, min_length=20, do_sample=False)[
+        0]['summary_text'] for chunk in chunks]
 
     summary_text = " ".join(summary_chunks)
 
-
     sentences = summary_text.split(".")
 
-    # Create an empty list to store the capitalized sentences
     capitalized_sentences = []
 
-    # Loop through each sentence in the list
     for sentence in sentences:
-        # Strip any leading or trailing whitespace from the sentence
+
         sentence = sentence.strip()
 
         if sentence:
-            # Capitalize the first letter of the sentence
+
             capitalized_sentence = sentence[0].upper() + sentence[1:]
         else:
             capitalized_sentence = sentence
-    
-        # Append the capitalized sentence to the list
+
         capitalized_sentences.append(capitalized_sentence)
 
     capitalized_text = ". ".join(capitalized_sentences)
@@ -192,54 +175,34 @@ def attendee(fsv):
     attendee_column = 0
 
     if fsv.endswith('.xls'):
-        # Load the Excel file using xlrd
-        # wb = xlrd.open_workbook(fsv)
-        # sheet = wb.sheet_by_index(0)
 
-        # # Count the number of non-empty cells in the specified column
-        # count = sum([1 for cell in sheet.col(attendee_column) if cell.value])-1
+        unique_attendees = set()
 
-        unique_attendees = set()  # a set to store unique attendees
-
-        workbook = xlrd.open_workbook(fsv)  # open the XLS file
-        worksheet = workbook.sheet_by_index(0)  # select the first worksheet
+        workbook = xlrd.open_workbook(fsv)
+        worksheet = workbook.sheet_by_index(0)
 
         for row_idx in range(1, worksheet.nrows):
-            # assuming the attendee name is in the first column of the XLS file
-            # remove leading/trailing whitespaces
+
             attendee = worksheet.cell_value(row_idx, 0).strip()
-            if attendee:  # check if the attendee name is not an empty string
-                # add the attendee name to the set of unique attendees
+            if attendee:
                 unique_attendees.add(attendee)
 
         count = len(unique_attendees)
 
     elif fsv.endswith('.csv'):
-        # Read the CSV file using the csv module
-        # with open(fsv, "r") as file:
-        #     csvReader = csv.reader(codecs.open(fsv, 'rU',))
-        # count = -1
-        # for row in csvReader:
-        #     if row[attendee_column]:
-        #         count += 1
 
-        unique_attendees = set()  # a set to store unique attendees
+        unique_attendees = set()
 
         with open(fsv, 'r') as file:
             reader = csv.reader(file)
             for row in reader:
-                # assuming the attendee name is in the first column of the CSV file
-                # remove leading/trailing whitespaces
+
                 attendee = row[0].strip()
-                if attendee:  # check if the attendee name is not an empty string
-                    # add the attendee name to the set of unique attendees
+                if attendee:
+
                     unique_attendees.add(attendee)
 
         count = len(unique_attendees)-1
-
-# print(f'Number of unique attendees: {num_unique_attendees}')
-# for name in unique_attendees:
-#     print(name)
 
     else:
         raise ValueError("Unsupported file format")
@@ -247,21 +210,24 @@ def attendee(fsv):
     return count
 
 
-# Contains the duration of the video in terms of seconds
+def vtt_text(abc):
+    with open(abc, 'r') as vtt_file:
+        text = vtt_file.read()
+
+    timestamps = re.findall(r'\d{2}:\d{2}:\d{2}\.\d{3}', text)
+    last_timestamp = timestamps[-1]
+    text = re.sub(
+        r'(\d{2}:){2}\d{2}\.\d{3}\s-->\s(\d{2}:){2}\d{2}\.\d{3}\n|<c.[^>]+>|(\b[A-Z]+\b:\s)?', '', text)
+    text = re.sub(r'(\b\w{8}-\w{4}-\w{4}-\w{4}-\w{12}-\d+\b)', '', text)
+    lines = text.split("\n")
+    non_empty_lines = [line for line in lines if line.strip() != ""]
+    cleantext = "\n".join(non_empty_lines)
+
+    last_timestamp_datetime = datetime.strptime(last_timestamp, '%H:%M:%S.%f')
+    seconds = (last_timestamp_datetime - datetime(1900, 1, 1)).total_seconds()
+    return cleantext, seconds
 
 
-# def delete_files(file_paths):
-#     time.sleep(120)
-#     for file_path in file_paths:
-#         try:
-#             # delete the file
-#             os.remove(file_path)
-#             print(f"{file_path} has been deleted")
-#         except OSError as error:
-#             print(error)
-        
-#     return jsonify({'result': 'Files Deleted'})
-
- 
 if __name__ == '__main__':
+
     app.run(debug=True)
