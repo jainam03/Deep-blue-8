@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/index.css') }}">
     <!-- <link rel="stylesheet" href="./index.css"> -->
-    <title>Summary Generator</title>
+    <title>Teams meeting Summary Generator</title>
 </head>
 
 <body>
@@ -18,10 +18,10 @@
         </label>
     </div>
     <br>
+    <h1>Teams meeting Summary Generator</h1>
     <div class="card-container">
-        <h1>Summary Generator</h1>
         <form action="{{url_for('summarization')}}" method="post" enctype="multipart/form-data" id="form-el">
-            <label for="video-file">Enter a Video File:</label>
+            <label for="video-file">Enter a video / transcript File:</label>
             <input type="file" name="video" id="video-file" accept=".mp4">
             <label for="csv-file">Enter a CSV / XLS File:</label>
             <input type="file" name="csv_file" id="csv-file" accept=".csv">
