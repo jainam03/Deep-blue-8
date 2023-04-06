@@ -5,14 +5,9 @@ import csv
 import moviepy.editor as mp
 import nltk
 import nltk.downloader
-from sumy.parsers.plaintext import PlaintextParser
-from sumy.nlp.tokenizers import Tokenizer
-from sumy.summarizers.lex_rank import LexRankSummarizer
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import xlrd
-import time
-import codecs
 import re
 from datetime import datetime
 from transformers import pipeline, AutoTokenizer, AutoModelWithLMHead
@@ -40,7 +35,7 @@ def summarization():
         return 'No video file found'
     video = request.files['video']
     if video.filename == '':
-        return 'No video selected'
+        return 'No File selected'
     if video and allowed_file(video.filename):
         video.save(video.filename)
     else:
@@ -70,7 +65,7 @@ def summarization():
         text = ''.join(map(str, result.stdout))
         clip.close()
     else:
-        print("ERROR")
+        return "error"
 
     csv_file = request.files['csv_file']
     
