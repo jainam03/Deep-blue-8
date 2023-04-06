@@ -78,15 +78,7 @@ def summarization():
         csv_file.save(fsv)
         attendee_value = attendee(fsv)
 
-    # csv_file = request.files['csv_file']
-    # fsv = csv_file.filename
-    # csv_file.save(fsv)
-
     summary = summarize(text)
-
-    # attendee_value = attendee(fsv)
-
-    # file_paths = ["static\\videos\\" + video.filename,"audio1_file.mp3", fsv, "transcript.txt"]
 
     action_item = find_action_item(text)
 
