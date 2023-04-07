@@ -86,9 +86,8 @@ def summarization():
 
 
 def find_action_item(text):
-    array_text = text.split('. ')
-    actions = ["backup", "support", "Project title", "deadline", "Schedule",
-               "decision", "Prepare", "Contact", "develop budget", "follow up", "demand"]
+    array_text = text.split('.')
+    actions = ["backup", "support", "Project title", "deadline", "Schedule","decision", "Prepare", "budget", "follow up","agenda","emergency","task"]
     actions = [' '.join([word.lower() for word in sentence.split()
                         if word.lower()]) for sentence in actions]
     array_text = [' '.join([word.lower() for word in sentence.split(
@@ -105,11 +104,18 @@ def find_action_item(text):
         most_similar_indices = similarity_scores[i].argsort()[::-1][:5]
 
         for index in most_similar_indices:
-            if similarity_scores[i][index] > 0.3:
+            if similarity_scores[i][index] > 0.2:
 
                 results.append(array_text[index])
 
-    return results
+    
+    unique_sentences = list(set(results))
+    cap_array = [sentence.capitalize() for sentence in unique_sentences]
+
+# print(unique_sentences)
+        
+    return cap_array
+
 
 
 def summarize(text):
@@ -199,7 +205,7 @@ def attendee(fsv):
 
                     unique_attendees.add(attendee)
 
-        count = len(unique_attendees)-1
+        count = (len(unique_attendees)-1)/2
 
     else:
         raise ValueError("Unsupported file format")
